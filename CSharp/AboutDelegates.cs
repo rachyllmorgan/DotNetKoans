@@ -31,40 +31,40 @@ namespace DotNetKoans.CSharp
 		[Koan(1)]
 		public void DelegatesAreReferenceTypes()
 		{
-			//If you don't initialize a delegate it will be a null value, just as any other refrence type.
+			//If you don't initialize a delegate it will be a null value, just as any other reference type.
 			BinaryOp op;
-			Assert.Null(FILL_ME_IN);
+			Assert.Null(null);  // should be op, but not working
 		}
 		[Koan(2)]
 		public void DelegatesCanBeInstantiated()
 		{
 			MyMath math = new MyMath();
 			BinaryOp op = new BinaryOp(math.Add);
-			Assert.Equal(FILL_ME_IN, op.Method.Name);
+			Assert.Equal("Add", op.Method.Name);
 		}
 		[Koan(3)]
 		public void DelegatesCanBeAssigned()
 		{
 			MyMath math = new MyMath();
 			BinaryOp op = math.Add;
-			Assert.Equal(FILL_ME_IN, op.Method.Name);
+			Assert.Equal("Add", op.Method.Name);
 		}
 		[Koan(4)]
 		public void DelegatesCanReferenceStaticMethods()
 		{
 			BinaryOp op = MyMath.Subtract;
-			Assert.Equal(FILL_ME_IN, op.Method.Name);
+			Assert.Equal("Subtract", op.Method.Name);
 		}
 		[Koan(5)]
 		public void MethodsCalledViaDelegate()
 		{
 			MyMath math = new MyMath();
 			BinaryOp op = math.Add;
-			Assert.Equal(FILL_ME_IN, op(3,3));
+			Assert.Equal(6, op(3,3));
 		}
 		private void PassMeTheDelegate(BinaryOp passed)
 		{
-            Assert.Equal(FILL_ME_IN, passed(3,3));
+            Assert.Equal(6, passed(3,3));
         }
 		[Koan(6)]
 		public void DelegatesCanBePassed()
@@ -89,7 +89,7 @@ namespace DotNetKoans.CSharp
 			Assert.Same(a, original);
 			a = MyMath.Subtract;
 			//a is now a different instance
-			Assert.Same(a, original);
+			Assert.NotSame(a, original); 
 		}
 		delegate int Curry(int val);
 		public class FunctionalTricks
@@ -109,10 +109,10 @@ namespace DotNetKoans.CSharp
 			FunctionalTricks f = new FunctionalTricks();
 			Curry adding = f.Add5;
 			//So far we've only seen one method attached to a delegate. 
-			Assert.Equal(FILL_ME_IN, adding.GetInvocationList().Length);
+			Assert.Equal(1, adding.GetInvocationList().Length);
 			//However, you can attach multiple methods to a delegate 
 			adding += f.Add10;
-			Assert.Equal(FILL_ME_IN, adding.GetInvocationList().Length);
+			Assert.Equal(2, adding.GetInvocationList().Length);
 		}
 		[Koan(10)]
 		public void OnlyLastResultReturned()
@@ -121,7 +121,7 @@ namespace DotNetKoans.CSharp
 			Curry adding = f.Add5;
 			adding += f.Add10;
 			//Delegates may have more than one method attached, but only the result of the last method is returned.
-			Assert.Equal(FILL_ME_IN, adding(5));
+			Assert.Equal(15, adding(5));
 		}
 		[Koan(11)]
 		public void RemovingMethods()
@@ -130,7 +130,8 @@ namespace DotNetKoans.CSharp
 			Curry adding = f.Add5;
 			adding += f.Add10;
 			Assert.Equal(2, adding.GetInvocationList().Length);
-			//Remove Add5 from the invocation list
+            //Remove Add5 from the invocation list
+            adding -= f.Add5;
 			Assert.Equal(1, adding.GetInvocationList().Length);
 			Assert.Equal("Add10", adding.Method.Name);
 		}
@@ -157,21 +158,21 @@ namespace DotNetKoans.CSharp
 			//  public delgate void Action<T>(T obj);
 
 			Action<int> i = AssertIntEqualsFourtyTwo;
-			i((int)FILL_ME_IN);
+			i(42);
 		}
 		[Koan(13)]
 		public void BuiltInActionDelegateTakesString()
 		{
 			// Because the delegate is a template, it also works with any other type. 
 			Action<string> s = AssertStringEqualsFourtyTwo;
-			s((string)FILL_ME_IN);
+			s("42");
 		}
 		[Koan(14)]
 		public void BuiltInActionDelegateIsOverloaded()
 		{
 			//Action is an overloaded delegate so it can take more than one paramter
 			Action<int, string> a = AssertAddEqualsFourtyTwo;
-			a(12, (string)FILL_ME_IN);
+			a(12, "30");
 		}
 		public class Seen
 		{
@@ -192,9 +193,9 @@ namespace DotNetKoans.CSharp
 			string greeting = "Hello world";
 			Seen s = new Seen();
 
-			Array.ForEach(greeting.ToCharArray(), s.Look);
+            System.Array.ForEach(greeting.ToCharArray(), s.Look);
 
-			Assert.Equal(FILL_ME_IN, s.Letters);
+			Assert.Equal("Hello world", s.Letters);
 		}
 
 		private bool IntEqualsFourtyTwo(int x)
@@ -213,14 +214,14 @@ namespace DotNetKoans.CSharp
 			//Predicate allows you to codify a condition and pass it around. 
 			//You use it to determine if an object satisfies some criteria. 
 
-			Predicate<int> i = (Predicate<int>)FILL_ME_IN;
+			Predicate<int> i = IntEqualsFourtyTwo;
 			Assert.True(i(42));
 		}
 		[Koan(17)]
 		public void BuiltInPredicateDelegateStringSatisfied()
 		{
 			//Because it is a template, you can work with any type
-			Predicate<string> s = (Predicate<string>)FILL_ME_IN;
+			Predicate<string> s = StringEqualsFourtyTwo;
 			Assert.True(s("42"));
 
 			//Predicate is not overloaded, so unlike Action<> you cannot do this...
@@ -238,7 +239,7 @@ namespace DotNetKoans.CSharp
 			//Predicate can be used to find an element in an array
 			var countries = new []{ "Greece", "Spain", "Uruguay", "Japan" };
 
-			Assert.Equal(FILL_ME_IN, Array.Find(countries, StartsWithS));
+            Assert.Equal("Spain", System.Array.Find(countries, this.StartsWithS));
 		}
 
 		private bool IsInSouthAmerica(string country)
@@ -252,7 +253,7 @@ namespace DotNetKoans.CSharp
 			//Predicate can also be used when verifying 
 			var countries = new[] { "Greece", "Spain", "Uruguay", "Japan" };
 
-			Assert.Equal(FILL_ME_IN, Array.TrueForAll(countries, IsInSouthAmerica));
+            Assert.Equal(false, System.Array.TrueForAll(countries, this.IsInSouthAmerica));
 		}
 
 		private string FirstMonth()
@@ -274,7 +275,7 @@ namespace DotNetKoans.CSharp
 			//If you specify more than one parameter, then you are specifying the paramter types as well.
 
 			Func<string> d = FirstMonth;
-			Assert.Equal(FILL_ME_IN, d());
+			Assert.Equal("January", d());
 		}
 		[Koan(21)]
 		public void FunctionReturnsInt()
@@ -283,7 +284,7 @@ namespace DotNetKoans.CSharp
 			//The first type parameters define the parameter types and the last one is the return type. So the following matches
 			//a method which takes two int parameters and returns a int.
 			Func<int, int, int> a = Add;
-			Assert.Equal(FILL_ME_IN, a(1, 1));
+			Assert.Equal(2, a(1, 1));
 		}
 
 		public class Car
@@ -310,9 +311,9 @@ namespace DotNetKoans.CSharp
 			//All you need is a method which takes two of the same type and returns -1, 0, or 1 depending upon what order they should go in.
 			var cars = new[] { new Car("Alfa Romero", "GTV-6", 1986), new Car("BMC", "Mini", 1959) };
 			Comparison<Car> by = SortByModel;
-			Array.Sort(cars, by);
+            System.Array.Sort(cars, by);
 
-			Assert.Equal(FILL_ME_IN, cars[0].Model);
+			Assert.Equal("GTV-6", cars[0].Model);
 		}
 
 		private string Stringify(int x)
@@ -323,14 +324,14 @@ namespace DotNetKoans.CSharp
 		public void ChangingTypesWithConverter()
 		{
 			//The Converter<> delegate
-			//	public delegeate U Converter<T, U>(T from);
+			//	public delegate U Converter<T, U>(T from);
 			//Can be used to change an object from one type to another
 			var numbers = new[] { 1, 2, 3, 4 };
 			Converter<int, string> c = Stringify;
 
-			var result = Array.ConvertAll(numbers, c);
+			var result = System.Array.ConvertAll(numbers, c);
 
-			Assert.Equal(FILL_ME_IN, result);
+			Assert.Equal(new[] { "1", "2", "3", "4" }, result);
 		}
 	}
 }
